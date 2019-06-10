@@ -1,0 +1,28 @@
+/* pages/index/index.wxss */
+.container {
+  width: 100vm;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-center {
+  text-align: center
+}
+
+.bgcolor-0 {
+  background: rgb(120, 185, 26);
+  color: #fff;
+  border-radius: 20px;
+  border: 2px solid rgb(255, 236, 26);
+}
+
+.container-list-item {
+  width: 6em;
+}
+
+.hover-class {
+  box-shadow: 0 0 5px rgb(255, 236, 26);
+  border-bottom: 5px solid rgb(255, 236, 26);
+}

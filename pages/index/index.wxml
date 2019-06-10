@@ -1,0 +1,5 @@
+<view class="container">
+  <view class="container-list text-center" wx:for="{{gameList}}">
+    <button class='container-list-item bgcolor-{{index}}' hover-class="hover-class"	 bindtap='itemTap'>{{item.name}}</button>
+  </view>
+</view>
