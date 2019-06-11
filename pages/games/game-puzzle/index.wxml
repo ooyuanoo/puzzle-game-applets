@@ -1,5 +1,4 @@
 <!--pages/games/game-puzzle/index.wxml-->
 <view>
-
+<canvas canvas-id="sketchpad" style="width: 100vw; height: 100vw;"></canvas>
 </view>
-<text>pages/games/game-puzzle/index.wxml</text>

@@ -19,7 +19,10 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    const context = wx.createCanvasContext('sketchpad');
+    const width = wx.getSystemInfoSync().windowWidth;
 
+    this.drawImageCanvas('./images/1.png', context)
   },
 
   /**
@@ -62,5 +65,20 @@ Page({
    */
   onShareAppMessage: function () {
 
-  }
+  },
+
+  drawImageCanvas: function (src, ctx) {
+    wx.getImageInfo({
+      src: src,
+      success(res) {
+        console.log(res)
+        ctx.drawImage(src, 0, 0, wx.getSystemInfoSync().windowWidth, wx.getSystemInfoSync().windowWidth);
+        ctx.draw();
+      }
+    })
+  },
+
+  canvasIdErrorCallback: function (e) {
+    console.error(e.detail.errMsg)
+  },
 })

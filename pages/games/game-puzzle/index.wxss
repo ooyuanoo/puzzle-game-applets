@@ -1,1 +1,6 @@
 /* pages/games/game-puzzle/index.wxss */
+#sketchpad {
+  width: 100vw;
+  height: 100vw;
+  display: block;
+}
