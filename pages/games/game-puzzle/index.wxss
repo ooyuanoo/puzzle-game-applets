@@ -1,6 +1,31 @@
 /* pages/games/game-puzzle/index.wxss */
+page {
+  background: #FFCC00;
+}
+
+.canvas-wrap {
+  padding: 30px 0;
+}
+
 #sketchpad {
-  width: 100vw;
-  height: 100vw;
   display: block;
+  margin: auto;
+}
+
+.flex-wrp-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-img {
+  width: 100px;
+  height: 100px;
+}
+
+.start-btn {
+  width: 150px;
+  height: 35px;
+  line-height: 35px;
 }

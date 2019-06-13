@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    canvasWidth: 0
   },
 
   /**
@@ -19,8 +19,13 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-    const context = wx.createCanvasContext('sketchpad');
-    const width = wx.getSystemInfoSync().windowWidth;
+    const canvasEL = 'sketchpad';
+    const context = wx.createCanvasContext(canvasEL);
+
+    const query = wx.createSelectorQuery();
+    query.select('#sketchpad').boundingClientRect().exec((res) => {
+      this.canvasWidth = res[0].width;
+    });
 
     this.drawImageCanvas('./images/1.png', context)
   },
@@ -70,15 +75,29 @@ Page({
   drawImageCanvas: function (src, ctx) {
     wx.getImageInfo({
       src: src,
-      success(res) {
-        console.log(res)
-        ctx.drawImage(src, 0, 0, wx.getSystemInfoSync().windowWidth, wx.getSystemInfoSync().windowWidth);
-        ctx.draw();
+      success: (res) => {
+        this.spliceCardImg(src, 9, ctx)
       }
     })
+  },
+
+  spliceCardImg: function (src, slice, ctx) {
+    const lineNum = Math.sqrt(slice);
+    const singleWidth = this.canvasWidth / lineNum;
+    const splitLineWidth = 3;
+
+    for (let i = 0; i < lineNum; i++) {
+      for (let j = 0; j < lineNum; j++) {
+        ctx.drawImage(src, i * singleWidth, j * singleWidth, singleWidth, singleWidth, i * singleWidth, j * singleWidth, singleWidth, singleWidth);
+        ctx.setLineWidth(splitLineWidth);
+        ctx.setStrokeStyle('#FFCC00');
+        ctx.strokeRect(i * singleWidth, j * singleWidth, singleWidth, singleWidth);
+      }
+    }
+    ctx.draw();
   },
 
   canvasIdErrorCallback: function (e) {
     console.error(e.detail.errMsg)
   },
-})
+});

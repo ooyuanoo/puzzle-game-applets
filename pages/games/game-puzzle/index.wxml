@@ -1,4 +1,10 @@
 <!--pages/games/game-puzzle/index.wxml-->
 <view>
-<canvas canvas-id="sketchpad" style="width: 100vw; height: 100vw;"></canvas>
+  <view class="canvas-wrap">
+    <canvas canvas-id="sketchpad" id="sketchpad" style="width: 90vw; height: 90vw;"></canvas>
+  </view>
+  <view class="flex-wrp-row">
+    <button class='start-btn'>开始</button>
+    <image class='demo-img' src="./images/1.png"></image>
+  </view>
 </view>
