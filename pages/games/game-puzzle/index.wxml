@@ -3,8 +3,12 @@
   <view class="canvas-wrap">
     <canvas canvas-id="sketchpad" id="sketchpad" style="width: 90vw; height: 90vw;"></canvas>
   </view>
-  <view class="flex-wrp-row">
-    <button class='start-btn'>开始</button>
-    <image class='demo-img' src="./images/1.png"></image>
+  <view class="flex-wrp-row example-panel">
+    <view>
+      <button class='start-btn'>开始</button>
+    </view>
+    <view>
+      <image class='demo-img' src="./images/1.png"></image>
+    </view>
   </view>
 </view>

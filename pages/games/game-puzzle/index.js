@@ -90,7 +90,7 @@ Page({
       for (let j = 0; j < lineNum; j++) {
         ctx.drawImage(src, i * singleWidth, j * singleWidth, singleWidth, singleWidth, i * singleWidth, j * singleWidth, singleWidth, singleWidth);
         ctx.setLineWidth(splitLineWidth);
-        ctx.setStrokeStyle('#FFCC00');
+        ctx.setStrokeStyle('#56A902');
         ctx.strokeRect(i * singleWidth, j * singleWidth, singleWidth, singleWidth);
       }
     }
