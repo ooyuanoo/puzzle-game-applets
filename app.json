@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/games/game-puzzle/index",
     "pages/index/index",
-    "pages/logs/index",
-    "pages/games/game-puzzle/index"
+    "pages/logs/index"
   ],
   "window": {
     "navigationBarTitleText": "小院游戏",

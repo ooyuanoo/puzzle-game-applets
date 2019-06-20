@@ -5,7 +5,11 @@ Page({
    * 页面的初始数据
    */
   data: {
-    canvasWidth: 0
+    canvasWidth: 0,
+    dots: [],
+    ctx: null,
+    imgUrl: '',
+    slice: 9 // 默认分割的片数
   },
 
   /**
@@ -20,14 +24,14 @@ Page({
    */
   onReady: function () {
     const canvasEL = 'sketchpad';
-    const context = wx.createCanvasContext(canvasEL);
+    this.data.ctx = wx.createCanvasContext(canvasEL);
 
     const query = wx.createSelectorQuery();
     query.select('#sketchpad').boundingClientRect().exec((res) => {
-      this.canvasWidth = res[0].width;
+      this.data.canvasWidth = res[0].width;
     });
 
-    this.drawImageCanvas('./images/1.png', context)
+    this.drawImageCanvas('./images/1.png')
   },
 
   /**
@@ -72,29 +76,49 @@ Page({
 
   },
 
-  drawImageCanvas: function (src, ctx) {
+  drawImageCanvas: function (src) {
     wx.getImageInfo({
       src: src,
       success: (res) => {
-        this.spliceCardImg(src, 9, ctx)
+        this.data.imgUrl = src;
+        this.spliceCardImg()
       }
     })
   },
 
-  spliceCardImg: function (src, slice, ctx) {
-    const lineNum = Math.sqrt(slice);
-    const singleWidth = this.canvasWidth / lineNum;
-    const splitLineWidth = 3;
+  spliceCardImg: function () {
+    const lineNum = Math.sqrt(this.data.slice);
+    const singleWidth = this.data.canvasWidth / lineNum;
 
     for (let i = 0; i < lineNum; i++) {
       for (let j = 0; j < lineNum; j++) {
-        ctx.drawImage(src, i * singleWidth, j * singleWidth, singleWidth, singleWidth, i * singleWidth, j * singleWidth, singleWidth, singleWidth);
-        ctx.setLineWidth(splitLineWidth);
-        ctx.setStrokeStyle('#56A902');
-        ctx.strokeRect(i * singleWidth, j * singleWidth, singleWidth, singleWidth);
+        this.data.dots.push({
+          x: i * singleWidth,
+          y: j * singleWidth
+        });
       }
     }
-    ctx.draw();
+
+    let drawDots = this.data.dots.slice(0, this.data.dots.length - 1);
+
+    drawDots = drawDots.sort((a, b) => {
+      return 0.5 - Math.random();
+    })
+
+    drawDots.forEach((o) => {
+      this.drawGameCard(o, singleWidth)
+    })
+
+    this.data.ctx.draw();
+  },
+
+  drawGameCard(item, singleWidth) {
+    const splitLineWidth = 3;
+
+    this.data.ctx.drawImage(this.data.imgUrl, item.x, item.y, singleWidth, singleWidth, item.x, item.y, singleWidth, singleWidth);
+    this.data.ctx.setLineWidth(splitLineWidth);
+    this.data.ctx.setStrokeStyle('#56A902');
+    this.data.ctx.strokeRect(item.x, item.y, singleWidth, singleWidth);
   },
 
   canvasIdErrorCallback: function (e) {

@@ -5,10 +5,20 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.94",
+	"libVersion": "2.7.1",
 	"appid": "wx685ba1b48faff05f",
 	"projectname": "puzzle-game-applets",
 	"isGameTourist": false,
@@ -35,9 +45,10 @@
 			"current": 0,
 			"list": [
 				{
-					"id": -1,
+					"id": 0,
 					"name": "游戏页面-拼图游戏",
 					"pathName": "pages/games/game-puzzle/index",
+					"query": "",
 					"scene": null
 				}
 			]
