@@ -1,7 +1,7 @@
 <!--pages/games/game-puzzle/index.wxml-->
 <view>
   <view class="canvas-wrap">
-    <canvas canvas-id="sketchpad" id="sketchpad" style="width: 90vw; height: 90vw;"></canvas>
+    <canvas canvas-id="sketchpad" id="sketchpad" style="width: 90vw; height: 90vw;" bindtouchend="slideCard"></canvas>
   </view>
   <view class="flex-wrp-row example-panel">
     <view>
