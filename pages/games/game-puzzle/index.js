@@ -9,8 +9,10 @@ Page({
     dots: [],
     emptyDot: {
       x: 0,
-      y: 0
+      y: 0,
+      index: 0
     },
+    randomCardArray: [],
     ctx: null,
     imgUrl: '',
     slice: 9, // 默认分割的片数
@@ -88,7 +90,7 @@ Page({
     // 保存正确的点
     for (let i = 0; i < perLineNum; i++) {
       for (let j = 0; j < perLineNum; j++) {
-        callback && callback(i, j);
+        callback && callback(j, i);
       }
     }
   },
@@ -117,10 +119,12 @@ Page({
     let drawDots = this.data.dots.slice(0, this.data.dots.length - 1).sort((a, b) => {
       return 0.5 - Math.random();
     });
+    this.data.randomCardArray = drawDots;
 
     // 记录一个空的节点
     this.data.emptyDot.x = this.data.dots[this.data.dots.length - 1].x;
     this.data.emptyDot.y = this.data.dots[this.data.dots.length - 1].y;
+    this.data.emptyDot.index = this.data.dots.length - 1;
 
     // 循环画画
     this.drawGameCard(drawDots);
@@ -136,20 +140,29 @@ Page({
         return;
       }
 
+      // 记录画布上的位置
+      drawDots[count].drawX = i * this.data.perWidth;
+      drawDots[count].drawY = j * this.data.perWidth;
+
       this.data.ctx.drawImage(
         this.data.imgUrl,
         drawDots[count].x,
         drawDots[count].y,
         this.data.perWidth,
         this.data.perWidth,
-        i * this.data.perWidth,
-        j * this.data.perWidth,
+        drawDots[count].drawX,
+        drawDots[count].drawY,
         this.data.perWidth,
         this.data.perWidth
       );
       this.data.ctx.setLineWidth(splitLineWidth);
       this.data.ctx.setStrokeStyle('#56A902');
-      this.data.ctx.strokeRect(i * perWidth, j * perWidth, perWidth, perWidth);
+      this.data.ctx.strokeRect(
+        i * this.data.perWidth,
+        j * this.data.perWidth,
+        this.data.perWidth,
+        this.data.perWidth
+      );
       this.data.ctx.draw(true);
       count++;
     });
@@ -160,14 +173,57 @@ Page({
     let matchedIndex = 0;
     let {x, y} = e.changedTouches[0];
 
-    this.loopSlice((i, j) => {
-      if (x > (i - 1) * this.data.perWidth && x < i * this.data.perWidth &&
-        y > (j - 1) * this.data.perWidth && y < j * this.data.perWidth) {
+    // 获取点中的一块
+    const find = this.data.randomCardArray.find((o) => {
+      return (x > o.drawX && x < o.drawX + this.data.perWidth &&
+        y > o.drawY && y < o.drawY + this.data.perWidth)
+    });
 
-      }
+    if (!find) {
+      return;
+    }
 
-      count++;
-    })
+    // 对比emptyDot
+    if ((find.drawX === this.data.emptyDot.x && find.drawY === this.data.emptyDot.y - this.data.perWidth) ||
+      (find.drawX === this.data.emptyDot.x - this.data.perWidth && this.data.emptyDot.y === find.drawY) ||
+      (find.drawX === this.data.emptyDot.x + this.data.perWidth && this.data.emptyDot.y === find.drawY) ||
+      (find.drawX === this.data.emptyDot.x && find.drawY === this.data.emptyDot.y + this.data.perWidth)) {
+      // 滑动滑动
+      this.moveAnimation(find);
+    }
+    // window.requestAnimationFrame()
+  },
+
+  moveAnimation(matched) {
+    const curImage = matched;
+
+    this.data.ctx.drawImage(
+      this.data.imgUrl,
+      curImage.x,
+      curImage.y,
+      this.data.perWidth,
+      this.data.perWidth,
+      this.data.emptyDot.x,
+      this.data.emptyDot.y,
+      this.data.perWidth,
+      this.data.perWidth
+    );
+
+    this.data.ctx.clearRect(curImage.drawX, curImage.drawY, this.data.perWidth, this.data.perWidth);
+    this.data.ctx.setLineWidth(3);
+    this.data.ctx.setStrokeStyle('#56A902');
+    this.data.ctx.strokeRect(
+      this.data.emptyDot.x * this.data.perWidth,
+      this.data.emptyDot.y * this.data.perWidth,
+      this.data.perWidth,
+      this.data.perWidth
+    );
+    this.data.ctx.draw(true);
+    const {x, y} = this.data.emptyDot;
+    this.data.emptyDot.x = curImage.drawX;
+    this.data.emptyDot.y = curImage.drawY;
+    curImage.drawX = x;
+    curImage.drawY = y;
   },
 
   canvasIdErrorCallback: function (e) {
