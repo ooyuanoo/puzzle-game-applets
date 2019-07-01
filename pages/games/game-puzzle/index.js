@@ -16,7 +16,17 @@ Page({
     ctx: null,
     imgUrl: '',
     slice: 9, // 默认分割的片数
-    perWidth: ''
+    perWidth: '',
+    countTimestamp: 0,
+    countTime: '00:00',
+    countTimeInter: null,
+    stepCount: 0, // 步数
+    levelType: 1,
+    level: {
+      1: '简单',
+      2: '容易',
+      3: '难'
+    }
   },
 
   /**
@@ -38,7 +48,16 @@ Page({
       this.data.canvasWidth = res[0].width;
     });
 
-    this.drawImageCanvas('./images/1.png')
+    this.drawImageCanvas('./images/1.png');
+
+    // 开始计时
+    this.data.countTimeInter =setInterval(() => {
+      this.data.countTimestamp += 1;
+
+      this.setData({
+        countTime: String(Math.floor(this.data.countTimestamp / 60)).padStart(2, '0') + ':' + String(Math.floor(this.data.countTimestamp % 60)).padStart(2, '0')
+      })
+    }, 1000)
   },
 
   /**
@@ -99,8 +118,12 @@ Page({
     wx.getImageInfo({
       src: src,
       success: (res) => {
+        console.log(res)
         this.data.imgUrl = src;
         this.drawGamePanel();
+      },
+      fail: (err) => {
+        console.log(`图片加载失败${err}`);
       }
     })
   },
@@ -109,7 +132,7 @@ Page({
     // 保存正确的点
     this.loopSlice((i, j) => {
       this.data.dots.push({
-        x: i * this.data.perWidth,
+        x: i * this.data.perWidth, // 原图位置
         y: j * this.data.perWidth,
         position: [i, j]
       });
@@ -132,8 +155,8 @@ Page({
 
   drawGameCard: function (drawDots) {
     const perLineNum = Math.sqrt(this.data.slice);
-    const splitLineWidth = 3;
     let count = 0;
+    console.log(this.data.imgUrl)
 
     this.loopSlice((i, j) => {
       if (i === perLineNum - 1 && j === perLineNum - 1) {
@@ -155,17 +178,11 @@ Page({
         this.data.perWidth,
         this.data.perWidth
       );
-      this.data.ctx.setLineWidth(splitLineWidth);
-      this.data.ctx.setStrokeStyle('#56A902');
-      this.data.ctx.strokeRect(
-        i * this.data.perWidth,
-        j * this.data.perWidth,
-        this.data.perWidth,
-        this.data.perWidth
-      );
       this.data.ctx.draw(true);
       count++;
     });
+
+    this.drawRectBorder();
   },
 
   slideCard: function(e) {
@@ -188,15 +205,41 @@ Page({
       (find.drawX === this.data.emptyDot.x - this.data.perWidth && this.data.emptyDot.y === find.drawY) ||
       (find.drawX === this.data.emptyDot.x + this.data.perWidth && this.data.emptyDot.y === find.drawY) ||
       (find.drawX === this.data.emptyDot.x && find.drawY === this.data.emptyDot.y + this.data.perWidth)) {
+      // 记步数
+      this.setData({
+        stepCount: this.data.stepCount + 1
+      })
+
       // 滑动滑动
       this.moveAnimation(find);
+
+      // 画边框
+      this.drawRectBorder();
     }
-    // window.requestAnimationFrame()
+  },
+
+  drawRectBorder() { // 画边框
+    const splitLineWidth = 3;
+
+    this.loopSlice((i, j) => {
+      const dotX = i * this.data.perWidth;
+      const dotY = j * this.data.perWidth;
+
+      this.data.ctx.setLineWidth(splitLineWidth);
+      this.data.ctx.setStrokeStyle('#76cafe');
+      this.data.ctx.moveTo(dotX, dotY);
+      this.data.ctx.lineTo(dotX + this.data.perWidth, dotY);
+      this.data.ctx.moveTo(dotX, dotY);
+      this.data.ctx.lineTo(dotX, dotY + this.data.perWidth);
+      this.data.ctx.stroke();
+      this.data.ctx.draw(true);
+    });
   },
 
   moveAnimation(matched) {
     const curImage = matched;
 
+    // 画图片
     this.data.ctx.drawImage(
       this.data.imgUrl,
       curImage.x,
@@ -210,20 +253,39 @@ Page({
     );
 
     this.data.ctx.clearRect(curImage.drawX, curImage.drawY, this.data.perWidth, this.data.perWidth);
-    this.data.ctx.setLineWidth(3);
-    this.data.ctx.setStrokeStyle('#56A902');
-    this.data.ctx.strokeRect(
-      this.data.emptyDot.x * this.data.perWidth,
-      this.data.emptyDot.y * this.data.perWidth,
-      this.data.perWidth,
-      this.data.perWidth
-    );
     this.data.ctx.draw(true);
-    const {x, y} = this.data.emptyDot;
+
+    const { x, y } = this.data.emptyDot;
     this.data.emptyDot.x = curImage.drawX;
     this.data.emptyDot.y = curImage.drawY;
-    curImage.drawX = x;
-    curImage.drawY = y;
+    matched.drawX = x;
+    matched.drawY = y;
+
+    if (this.checkIsComplete()) {
+      wx.showModal({
+        title: '恭喜完成拼图',
+        content: `完成拼图，您总共用了${this.data.countTime}, ${this.data.stepCount}步`
+      })
+    }
+  },
+
+  checkIsComplete() { // 检查是否完成拼图
+    const data = this.data.randomCardArray;
+    let isComplete = true;
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].x !== data[i].drawX || data[i].y !== data[i].drawY) {
+        isComplete = false;
+        break;
+      }
+    }
+
+    // 如果已经完成清除定时器
+    if (isComplete) {
+      clearInterval(this.data.countTimeInter)
+    }
+
+    return isComplete;
   },
 
   canvasIdErrorCallback: function (e) {

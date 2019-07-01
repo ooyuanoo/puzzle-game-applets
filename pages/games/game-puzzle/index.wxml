@@ -4,8 +4,17 @@
     <canvas canvas-id="sketchpad" id="sketchpad" style="width: 90vw; height: 90vw;" bindtouchend="slideCard"></canvas>
   </view>
   <view class="flex-wrp-row example-panel">
-    <view>
-      <button class='start-btn'>开始</button>
+    <view class="count-time flex-center">
+      <view class="count-time-small">用时：</view>
+      <view class='count-time-time'>{{countTime}}</view>
+    </view>
+    <view class="count-time flex-center">
+      <view class="count-time-small">难度：</view>
+      <view class='count-time-time'>{{level[levelType]}}</view>
+    </view>
+    <view class="count-time flex-center">
+      <view class="count-time-small">步数：</view>
+      <view class='count-time-time'>{{stepCount}}</view>
     </view>
     <view>
       <image class='demo-img' src="./images/1.png"></image>
