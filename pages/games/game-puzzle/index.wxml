@@ -17,7 +17,7 @@
       <view class='count-time-time'>{{stepCount}}</view>
     </view>
     <view>
-      <image class='demo-img' src="./images/1.png"></image>
+      <image class='demo-img' src="{{imgUrl}}"></image>
     </view>
   </view>
 </view>

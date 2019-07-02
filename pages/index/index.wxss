@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rbg(255, 234, 71);
 }
 
 .text-center {
@@ -12,10 +13,10 @@
 }
 
 .bgcolor-0 {
-  background: rgb(120, 185, 26);
+  background: #76cafe;
   color: #fff;
   border-radius: 20px;
-  border: 2px solid rgb(255, 236, 26);
+  border: 1px solid;
 }
 
 .container-list-item {
@@ -23,6 +24,5 @@
 }
 
 .hover-class {
-  box-shadow: 0 0 5px rgb(255, 236, 26);
-  border-bottom: 5px solid rgb(255, 236, 26);
+  border: 1px solid rgb(251, 154, 194);
 }

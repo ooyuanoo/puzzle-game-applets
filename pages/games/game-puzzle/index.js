@@ -33,7 +33,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    wx.showLoading({
+      title: '加载中',
+    })
   },
 
   /**
@@ -115,15 +117,15 @@ Page({
   },
 
   drawImageCanvas: function (src) {
-    wx.getImageInfo({
-      src: src,
+    wx.downloadFile({
+      url: 'https://www.kfypmqqw.com/400/400/food/',
       success: (res) => {
-        console.log(res)
-        this.data.imgUrl = src;
+        this.setData({
+          imgUrl: res.tempFilePath
+        });
+
         this.drawGamePanel();
-      },
-      fail: (err) => {
-        console.log(`图片加载失败${err}`);
+        wx.hideLoading()
       }
     })
   },
@@ -220,6 +222,7 @@ Page({
 
   drawRectBorder() { // 画边框
     const splitLineWidth = 3;
+    const perLineNum = Math.sqrt(this.data.slice);
 
     this.loopSlice((i, j) => {
       const dotX = i * this.data.perWidth;
@@ -227,10 +230,22 @@ Page({
 
       this.data.ctx.setLineWidth(splitLineWidth);
       this.data.ctx.setStrokeStyle('#76cafe');
+
       this.data.ctx.moveTo(dotX, dotY);
       this.data.ctx.lineTo(dotX + this.data.perWidth, dotY);
       this.data.ctx.moveTo(dotX, dotY);
       this.data.ctx.lineTo(dotX, dotY + this.data.perWidth);
+
+      if (i === perLineNum - 1) {
+        this.data.ctx.moveTo(dotX + this.data.perWidth, dotY);
+        this.data.ctx.lineTo(dotX + this.data.perWidth, dotY + this.data.perWidth);
+      }
+
+      if (j === perLineNum - 1) {
+        this.data.ctx.moveTo(dotX, dotY + this.data.perWidth);
+        this.data.ctx.lineTo(dotX + this.data.perWidth, dotY + this.data.perWidth)
+      }
+      
       this.data.ctx.stroke();
       this.data.ctx.draw(true);
     });

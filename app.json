@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/games/game-puzzle/index",
     "pages/index/index",
+    "pages/games/game-puzzle/index",
     "pages/logs/index"
   ],
   "window": {
